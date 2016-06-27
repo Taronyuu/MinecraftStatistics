@@ -1,0 +1,9 @@
+name: MinecraftStatistics
+version: 0.1
+author: Zander van der Meer
+main: nl.zandervdm.minecraftstatistics.Main
+website: http://zandervdm.nl
+commands:
+    getme:
+        description: Get your details
+        usage: /getme
