@@ -25,7 +25,6 @@ public class CollectPlayerDataTask extends BukkitRunnable {
         Statistic[] statistics = Statistic.values();
 
         for(Player player : players){
-            System.out.println(MySQL.get("SELECT * FROM stats WHERE uuid = '" + player.getUniqueId() + "'"));
             try {
                 boolean result = MySQL.get("SELECT * FROM stats WHERE uuid = '" + player.getUniqueId() + "'").last();
                 if(!result){

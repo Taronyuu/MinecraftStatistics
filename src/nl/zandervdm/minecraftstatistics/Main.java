@@ -1,6 +1,7 @@
 package nl.zandervdm.minecraftstatistics;
 
 import nl.zandervdm.minecraftstatistics.Classes.MySQL;
+import nl.zandervdm.minecraftstatistics.Listeners.SetPlayerOfflineListener;
 import nl.zandervdm.minecraftstatistics.Tasks.CollectPlayerDataTask;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,6 +21,8 @@ public class Main extends JavaPlugin {
         if(MySQL.connection != null){
             createDatabase();
         }
+
+        getServer().getPluginManager().registerEvents(new SetPlayerOfflineListener(), this);
 
         new CollectPlayerDataTask(this).runTaskLater(this, 100);
     }
