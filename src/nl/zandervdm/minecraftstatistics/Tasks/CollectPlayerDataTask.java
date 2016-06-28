@@ -21,6 +21,7 @@ public class CollectPlayerDataTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        System.out.println("Player stats synced");
         Collection<? extends Player> players = this.plugin.getServer().getOnlinePlayers();
         Statistic[] statistics = Statistic.values();
 
@@ -46,7 +47,7 @@ public class CollectPlayerDataTask extends BukkitRunnable {
             MySQL.update(query);
         }
 
-        new CollectPlayerDataTask(this.plugin).runTaskLater(this.plugin, 100);
+        new CollectPlayerDataTask(this.plugin).runTaskLater(this.plugin, Main.updateFrequency*20);
     }
 
     protected void createUser(Player player){

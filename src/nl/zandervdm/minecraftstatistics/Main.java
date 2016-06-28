@@ -2,20 +2,26 @@ package nl.zandervdm.minecraftstatistics;
 
 import nl.zandervdm.minecraftstatistics.Classes.MySQL;
 import nl.zandervdm.minecraftstatistics.Listeners.SetPlayerOfflineListener;
+import nl.zandervdm.minecraftstatistics.Listeners.SetPlayerOnlineListener;
 import nl.zandervdm.minecraftstatistics.Tasks.CollectPlayerDataTask;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class Main extends JavaPlugin {
 
     public static FileConfiguration config;
+    public static Integer updateFrequency;
 
     @Override
     public void onEnable()
     {
-        this.config = getConfig();
-        this.config.options().copyDefaults(true);
+        createConfig();
+        config = getConfig();
+
+        updateFrequency = config.getInt("frequency");
 
         MySQL.establishMySQL();
         if(MySQL.connection != null){
@@ -23,17 +29,16 @@ public class Main extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(new SetPlayerOfflineListener(), this);
+        getServer().getPluginManager().registerEvents(new SetPlayerOnlineListener(), this);
 
-        new CollectPlayerDataTask(this).runTaskLater(this, 100);
+        new CollectPlayerDataTask(this).runTaskLater(this, updateFrequency*20);
     }
 
-    public void onDisable()
-    {
+    public void onDisable() {
 
     }
 
-    protected void createDatabase()
-    {
+    protected void createDatabase() {
         String table = "create table if not exists stats (" +
                         "id int KEY NOT NULL AUTO_INCREMENT, " +
                         "uuid varchar(255)," +
@@ -48,9 +53,19 @@ public class Main extends JavaPlugin {
         }
 
         table = table + " is_online int);";
-
-        System.out.println(table);
         MySQL.update(table);
+    }
+
+    protected void createConfig(){
+        if(!getDataFolder().exists()){
+            getDataFolder().mkdirs();
+        }
+
+        File file = new File(getDataFolder(), "config.yml");
+        if(!file.exists()){
+            getLogger().info("Config.yml not found, creating!");
+            saveDefaultConfig();
+        }
     }
 
 }
