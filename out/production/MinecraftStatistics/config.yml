@@ -1,10 +1,10 @@
 #Fill in your MySQL details
 mysql:
-    host: "localhost"
+    host: localhost
     port: 3306
-    database: "minecraft_stats"
-    username: "root"
-    password: "root"
+    database: database
+    username: username
+    password: password
 
 #Time between updates for all online players in seconds
 #(online status is updated immediately)

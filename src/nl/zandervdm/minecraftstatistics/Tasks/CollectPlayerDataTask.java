@@ -21,7 +21,6 @@ public class CollectPlayerDataTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        System.out.println("Player stats synced");
         Collection<? extends Player> players = this.plugin.getServer().getOnlinePlayers();
         Statistic[] statistics = Statistic.values();
 
