@@ -35,11 +35,11 @@ public class CollectPlayerDataTask extends BukkitRunnable {
             }
             String query = "UPDATE " + MySQL.table + " SET name='" + player.getName() + "', ";
 
-            for(Statistic statistic : statistics){
-                try{
+            for(Statistic statistic : this.plugin.getStats()){
+                try {
                     query = query + statistic + "='" + player.getStatistic(statistic) + "', ";
                 }catch (Exception e){
-                    //Ignore
+                    System.out.println(statistic);
                 }
             }
             query = query + "is_online=1 WHERE uuid='" + player.getUniqueId() + "'";
