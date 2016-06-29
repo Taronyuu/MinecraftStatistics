@@ -39,7 +39,7 @@ public class Main extends JavaPlugin {
     }
 
     protected void createDatabase() {
-        String table = "create table if not exists stats (" +
+        String table = "create table if not exists " + MySQL.table + " (" +
                         "id int KEY NOT NULL AUTO_INCREMENT, " +
                         "uuid varchar(255)," +
                         "name varchar(255),"; // Add ')' to close the statement

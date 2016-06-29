@@ -12,7 +12,7 @@ public class SetPlayerOnlineListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
 
-        String query = "UPDATE stats SET is_online=1 WHERE uuid='" + player.getUniqueId() + "'";
+        String query = "UPDATE " + MySQL.table + " SET is_online=1 WHERE uuid='" + player.getUniqueId() + "'";
         MySQL.update(query);
     }
 

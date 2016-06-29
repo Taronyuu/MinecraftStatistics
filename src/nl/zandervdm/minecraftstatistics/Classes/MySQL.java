@@ -13,6 +13,7 @@ public class MySQL {
     protected static String database;
     protected static String username;
     protected static String password;
+    public static String table;
 
     public static void establishMySQL()
     {
@@ -21,6 +22,10 @@ public class MySQL {
         database    = Main.config.getString("mysql.database");
         username    = Main.config.getString("mysql.username");
         password    = Main.config.getString("mysql.password");
+        table       = Main.config.getString("mysql.table");
+        if(table == null){
+            table = "stats";
+        }
 
         try{
             openConnection();

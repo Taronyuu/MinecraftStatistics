@@ -5,6 +5,7 @@ mysql:
     database: database
     username: username
     password: password
+    table: stats
 
 #Time between updates for all online players in seconds
 #(online status is updated immediately)
