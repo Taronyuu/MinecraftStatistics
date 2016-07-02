@@ -56,7 +56,7 @@ public class Main extends JavaPlugin {
                         "name varchar(255),"; // Add ')' to close the statement
 
         for(Statistic statistic : statistics){
-            table = table + "`" + statistic + "`" + " varchar(255),";
+            table = table + "`" + statistic + "`" + " int(30),";
         }
 
         table = table + " is_online int);";
