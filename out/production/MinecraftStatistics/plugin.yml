@@ -1,5 +1,9 @@
 name: MinecraftStatistics
-version: 1.0
+version: 1.2
 author: Zander van der Meer
 main: nl.zandervdm.minecraftstatistics.Main
 website: http://zandervdm.nl
+commands:
+    statSync:
+        description: Sync stats of all players currently online
+        usage: /statsync

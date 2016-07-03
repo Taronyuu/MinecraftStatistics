@@ -1,6 +1,7 @@
 package nl.zandervdm.minecraftstatistics.Classes;
 
 import nl.zandervdm.minecraftstatistics.Main;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 
@@ -17,6 +18,7 @@ public class MySQL {
 
     public static void establishMySQL()
     {
+
         host        = Main.config.getString("mysql.host");
         port        = Main.config.getInt("mysql.port");
         database    = Main.config.getString("mysql.database");
@@ -42,6 +44,15 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void updateAsync(final String query){
+        Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, new Runnable() {
+            @Override
+            public void run() {
+                update(query);
+            }
+        });
     }
 
     public static ResultSet get(String query)

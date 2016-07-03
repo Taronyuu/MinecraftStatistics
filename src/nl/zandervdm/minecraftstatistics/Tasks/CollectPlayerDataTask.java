@@ -1,7 +1,9 @@
 package nl.zandervdm.minecraftstatistics.Tasks;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import nl.zandervdm.minecraftstatistics.Classes.MySQL;
 import nl.zandervdm.minecraftstatistics.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,9 +16,16 @@ import java.util.List;
 public class CollectPlayerDataTask extends BukkitRunnable {
 
     protected Main plugin;
+    protected Boolean singleRunOnly;
 
-    public CollectPlayerDataTask(Main plugin) {
+    public CollectPlayerDataTask(Main plugin, Boolean singleRunOnly) {
         this.plugin = plugin;
+        this.singleRunOnly = singleRunOnly;
+    }
+
+    public CollectPlayerDataTask(Main plugin){
+        this.plugin = plugin;
+        this.singleRunOnly = false;
     }
 
     @Override
@@ -43,10 +52,12 @@ public class CollectPlayerDataTask extends BukkitRunnable {
                 }
             }
             query = query + "is_online=1 WHERE uuid='" + player.getUniqueId() + "'";
-            MySQL.update(query);
+            MySQL.updateAsync(query);
         }
 
-        new CollectPlayerDataTask(this.plugin).runTaskLater(this.plugin, Main.updateFrequency*20);
+        if(!singleRunOnly) {
+            new CollectPlayerDataTask(this.plugin).runTaskLater(this.plugin, Main.updateFrequency * 20);
+        }
     }
 
     protected void createUser(Player player){

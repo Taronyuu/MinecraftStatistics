@@ -1,6 +1,7 @@
 package nl.zandervdm.minecraftstatistics;
 
 import nl.zandervdm.minecraftstatistics.Classes.MySQL;
+import nl.zandervdm.minecraftstatistics.Commands.SyncPlayersCommand;
 import nl.zandervdm.minecraftstatistics.Listeners.SetPlayerOfflineListener;
 import nl.zandervdm.minecraftstatistics.Listeners.SetPlayerOnlineListener;
 import nl.zandervdm.minecraftstatistics.Tasks.CollectPlayerDataTask;
@@ -17,6 +18,7 @@ public class Main extends JavaPlugin {
     public static FileConfiguration config;
     public static Integer updateFrequency;
     public static List<Statistic> statistics;
+    public static Main plugin;
 
     @Override
     public void onEnable()
@@ -35,10 +37,14 @@ public class Main extends JavaPlugin {
         String query = "UPDATE " + MySQL.table + " SET is_online=0";
         MySQL.update(query);
 
+        plugin = this;
+
         getServer().getPluginManager().registerEvents(new SetPlayerOfflineListener(), this);
         getServer().getPluginManager().registerEvents(new SetPlayerOnlineListener(), this);
 
         new CollectPlayerDataTask(this).runTaskLater(this, updateFrequency*20);
+
+        this.getCommand("statsync").setExecutor(new SyncPlayersCommand(this));
     }
 
     public void onDisable() {
