@@ -34,14 +34,6 @@ public class CollectPlayerDataTask extends BukkitRunnable {
         Statistic[] statistics = Statistic.values();
 
         for(Player player : players){
-            try {
-                boolean result = MySQL.get("SELECT * FROM " + MySQL.table + " WHERE uuid = '" + player.getUniqueId() + "'").last();
-                if(!result){
-                    createUser(player);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
             String query = "UPDATE " + MySQL.table + " SET name='" + player.getName() + "', ";
 
             for(Statistic statistic : this.plugin.getStats()){
@@ -51,18 +43,13 @@ public class CollectPlayerDataTask extends BukkitRunnable {
                     System.out.println(statistic);
                 }
             }
-            query = query + "is_online=1 WHERE uuid='" + player.getUniqueId() + "'";
+            query = query + "is_online=1, server='" + MySQL.servername + "' WHERE uuid='" + player.getUniqueId() + "'";
             MySQL.updateAsync(query);
         }
 
         if(!singleRunOnly) {
             new CollectPlayerDataTask(this.plugin).runTaskLater(this.plugin, Main.updateFrequency * 20);
         }
-    }
-
-    protected void createUser(Player player){
-        String query = "INSERT INTO " + MySQL.table + " (uuid, name) VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "');";
-        MySQL.update(query);
     }
 
 }

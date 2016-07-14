@@ -10,3 +10,6 @@ mysql:
 #Time between updates for all online players in seconds
 #(online status is updated immediately)
 frequency: 600
+
+#Server name, can be used to use a single table for multiple servers
+servername: default

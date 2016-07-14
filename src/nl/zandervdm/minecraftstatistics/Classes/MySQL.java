@@ -14,6 +14,7 @@ public class MySQL {
     protected static String database;
     protected static String username;
     protected static String password;
+    public static String servername;
     public static String table;
 
     public static void establishMySQL()
@@ -24,6 +25,7 @@ public class MySQL {
         database    = Main.config.getString("mysql.database");
         username    = Main.config.getString("mysql.username");
         password    = Main.config.getString("mysql.password");
+        servername  = Main.config.getString("servername");
         table       = Main.config.getString("mysql.table");
         if(table == null){
             table = "stats";
@@ -43,6 +45,20 @@ public class MySQL {
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void update(String query, boolean silence)
+    {
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.execute();
+        } catch (SQLException e) {
+            if(silence){
+                //Ignore
+            }else{
+                e.printStackTrace();
+            }
         }
     }
 

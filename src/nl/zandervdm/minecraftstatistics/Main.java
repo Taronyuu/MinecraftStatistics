@@ -40,7 +40,7 @@ public class Main extends JavaPlugin {
         plugin = this;
 
         getServer().getPluginManager().registerEvents(new SetPlayerOfflineListener(), this);
-        getServer().getPluginManager().registerEvents(new SetPlayerOnlineListener(), this);
+        getServer().getPluginManager().registerEvents(new SetPlayerOnlineListener(this), this);
 
         new CollectPlayerDataTask(this).runTaskLater(this, updateFrequency*20);
 
@@ -67,6 +67,14 @@ public class Main extends JavaPlugin {
 
         table = table + " is_online int);";
         MySQL.update(table);
+        updateDatabase();
+    }
+
+    protected void updateDatabase() {
+        String query = "alter table " + MySQL.table + " " +
+                "ADD `server` varchar(100) NULL DEFAULT 'default' AFTER `name`";
+        System.out.println(query);
+        MySQL.update(query, true);
     }
 
     protected void createConfig(){
