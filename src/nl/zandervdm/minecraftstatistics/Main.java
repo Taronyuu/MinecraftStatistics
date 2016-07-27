@@ -73,7 +73,6 @@ public class Main extends JavaPlugin {
     protected void updateDatabase() {
         String query = "alter table " + MySQL.table + " " +
                 "ADD `server` varchar(100) NULL DEFAULT 'default' AFTER `name`";
-        System.out.println(query);
         MySQL.update(query, true);
     }
 
