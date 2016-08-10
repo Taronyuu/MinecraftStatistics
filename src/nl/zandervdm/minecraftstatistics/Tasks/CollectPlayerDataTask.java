@@ -30,6 +30,8 @@ public class CollectPlayerDataTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        MySQL.validateDatabase();
+
         Collection<? extends Player> players = this.plugin.getServer().getOnlinePlayers();
         Statistic[] statistics = Statistic.values();
 

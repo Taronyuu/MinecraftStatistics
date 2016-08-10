@@ -1,16 +1,12 @@
 package nl.zandervdm.minecraftstatistics.Commands;
 
+import nl.zandervdm.minecraftstatistics.Classes.MySQL;
 import nl.zandervdm.minecraftstatistics.Main;
 import nl.zandervdm.minecraftstatistics.Tasks.CollectPlayerDataTask;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.Collection;
-import java.util.List;
 
 public class SyncPlayersCommand implements CommandExecutor {
 
@@ -22,6 +18,8 @@ public class SyncPlayersCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        MySQL.validateDatabase();
+
         if(!commandSender.hasPermission("minecraftstatistics.sync")){
             commandSender.sendMessage(ChatColor.RED + "You don't have access to this command");
             return true;

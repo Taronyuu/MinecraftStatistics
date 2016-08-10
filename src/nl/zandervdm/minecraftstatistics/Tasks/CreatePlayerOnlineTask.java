@@ -16,6 +16,8 @@ public class CreatePlayerOnlineTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        MySQL.validateDatabase();
+
         try {
             boolean result = MySQL.get("SELECT * FROM " + MySQL.table + " WHERE uuid = '" + player.getUniqueId() + "'").last();
             if (!result) {

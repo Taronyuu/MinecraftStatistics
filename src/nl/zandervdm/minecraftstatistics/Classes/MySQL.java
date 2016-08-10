@@ -38,6 +38,17 @@ public class MySQL {
         }
     }
 
+    public static void validateDatabase(){
+        try {
+            if(connection == null || connection.isClosed() || connection.isReadOnly() || !connection.isValid(5)){
+                System.out.println("MinecraftStatistics: Invalid connection, reconnecting.");
+                MySQL.establishMySQL();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void update(String query)
     {
         try {
