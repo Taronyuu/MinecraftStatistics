@@ -27,7 +27,8 @@ public class CreatePlayerOnlineTask extends BukkitRunnable {
             e.printStackTrace();
         }
 
-        String query = "UPDATE " + MySQL.table + " SET is_online=1 WHERE uuid='" + player.getUniqueId() + "'";
+        int lastJoin = (int)(System.currentTimeMillis()/1000L);
+        String query = "UPDATE " + MySQL.table + " SET is_online=1,last_join=" + lastJoin + " WHERE uuid='" + player.getUniqueId() + "'";
 
         MySQL.updateAsync(query);
     }

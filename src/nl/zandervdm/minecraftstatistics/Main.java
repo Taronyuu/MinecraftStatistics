@@ -75,6 +75,9 @@ public class Main extends JavaPlugin {
         String query = "alter table " + MySQL.table + " " +
                 "ADD `server` varchar(100) NULL DEFAULT 'default' AFTER `name`";
         MySQL.update(query, true);
+        query = "alter table " + MySQL.table + " " +
+                "ADD `last_join` int AFTER `server`";
+        MySQL.update(query, true);
     }
 
     protected void createConfig(){
