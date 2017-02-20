@@ -78,6 +78,16 @@ public class Main extends JavaPlugin {
         query = "alter table " + MySQL.table + " " +
                 "ADD `last_join` int AFTER `server`";
         MySQL.update(query, true);
+        // This might a hacky solutions, but migrations are a bitch.
+        // Besides that, we want to support all future versions as well without keeping this up-to-date
+        for(Statistic statistic : statistics){
+            query = "alter table " + MySQL.table + " " +
+                    "ADD `" + statistic + "` int(30) AFTER `last_join`";
+            MySQL.update(query, true);
+        }
+
+        // What do we say to removing unused columns? Not today.
+        // (No really, we aren't doing that because of backwards compatibility.)
     }
 
     protected void createConfig(){
@@ -93,56 +103,24 @@ public class Main extends JavaPlugin {
     }
 
     protected List<Statistic> getStatistics(){
+        List<Statistic> ignore = new ArrayList<Statistic>();
+        ignore.add(Statistic.DROP);
+        ignore.add(Statistic.PICKUP);
+        ignore.add(Statistic.MINE_BLOCK);
+        ignore.add(Statistic.USE_ITEM);
+        ignore.add(Statistic.BREAK_ITEM);
+        ignore.add(Statistic.CRAFT_ITEM);
+        ignore.add(Statistic.KILL_ENTITY);
+        ignore.add(Statistic.ENTITY_KILLED_BY);
+
         List<Statistic> stats = new ArrayList<Statistic>();
-        stats.add(Statistic.DAMAGE_DEALT);
-        stats.add(Statistic.DAMAGE_TAKEN);
-        stats.add(Statistic.DEATHS);
-        stats.add(Statistic.MOB_KILLS);
-        stats.add(Statistic.PLAYER_KILLS);
-        stats.add(Statistic.FISH_CAUGHT);
-        stats.add(Statistic.ANIMALS_BRED);
-        stats.add(Statistic.TREASURE_FISHED);
-        stats.add(Statistic.JUNK_FISHED);
-        stats.add(Statistic.LEAVE_GAME);
-        stats.add(Statistic.JUMP);
-        stats.add(Statistic.PLAY_ONE_TICK);
-        stats.add(Statistic.WALK_ONE_CM);
-        stats.add(Statistic.SWIM_ONE_CM);
-        stats.add(Statistic.FALL_ONE_CM);
-        stats.add(Statistic.SNEAK_TIME);
-        stats.add(Statistic.CLIMB_ONE_CM);
-        stats.add(Statistic.FLY_ONE_CM);
-        stats.add(Statistic.MINECART_ONE_CM);
-        stats.add(Statistic.BOAT_ONE_CM);
-        stats.add(Statistic.PIG_ONE_CM);
-        stats.add(Statistic.HORSE_ONE_CM);
-        stats.add(Statistic.SPRINT_ONE_CM);
-        stats.add(Statistic.CROUCH_ONE_CM);
-        stats.add(Statistic.AVIATE_ONE_CM);
-        stats.add(Statistic.TIME_SINCE_DEATH);
-        stats.add(Statistic.TALKED_TO_VILLAGER);
-        stats.add(Statistic.TRADED_WITH_VILLAGER);
-        stats.add(Statistic.CAKE_SLICES_EATEN);
-        stats.add(Statistic.CAULDRON_FILLED);
-        stats.add(Statistic.CAULDRON_USED);
-        stats.add(Statistic.ARMOR_CLEANED);
-        stats.add(Statistic.BANNER_CLEANED);
-        stats.add(Statistic.BREWINGSTAND_INTERACTION);
-        stats.add(Statistic.BEACON_INTERACTION);
-        stats.add(Statistic.DROPPER_INSPECTED);
-        stats.add(Statistic.HOPPER_INSPECTED);
-        stats.add(Statistic.DISPENSER_INSPECTED);
-        stats.add(Statistic.NOTEBLOCK_PLAYED);
-        stats.add(Statistic.NOTEBLOCK_TUNED);
-        stats.add(Statistic.FLOWER_POTTED);
-        stats.add(Statistic.TRAPPED_CHEST_TRIGGERED);
-        stats.add(Statistic.ENDERCHEST_OPENED);
-        stats.add(Statistic.ITEM_ENCHANTED);
-        stats.add(Statistic.RECORD_PLAYED);
-        stats.add(Statistic.FURNACE_INTERACTION);
-        stats.add(Statistic.CRAFTING_TABLE_INTERACTION);
-        stats.add(Statistic.CHEST_OPENED);
-        stats.add(Statistic.SLEEP_IN_BED);
+        for(Statistic statistic : Statistic.values()){
+            // If the statistic is inside the ignore arraylist we should ignore it because it *will* throw an exception.
+            if(ignore.contains(statistic)) continue;
+
+            // Instead of adding them all by hand, just add which one are available.
+            stats.add(statistic);
+        }
         return stats;
     }
 

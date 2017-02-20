@@ -42,7 +42,7 @@ public class CollectPlayerDataTask extends BukkitRunnable {
                 try {
                     query = query + statistic + "='" + player.getStatistic(statistic) + "', ";
                 }catch (Exception e){
-                    System.out.println(statistic);
+                    // Most likely not allowed here
                 }
             }
             query = query + "is_online=1, server='" + MySQL.servername + "' WHERE uuid='" + player.getUniqueId() + "'";
