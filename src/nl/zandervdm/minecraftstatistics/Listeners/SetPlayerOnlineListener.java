@@ -18,7 +18,7 @@ public class SetPlayerOnlineListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        MySQL.validateDatabase();
+        (new MySQL()).validateDatabase();
 
         Player player = event.getPlayer();
         new CreatePlayerOnlineTask(player).runTaskAsynchronously(this.plugin);

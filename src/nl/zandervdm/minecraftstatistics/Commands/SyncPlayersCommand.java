@@ -18,7 +18,7 @@ public class SyncPlayersCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        MySQL.validateDatabase();
+        (new MySQL()).validateDatabase();
 
         if(!commandSender.hasPermission("minecraftstatistics.sync")){
             commandSender.sendMessage(ChatColor.RED + "You don't have access to this command");

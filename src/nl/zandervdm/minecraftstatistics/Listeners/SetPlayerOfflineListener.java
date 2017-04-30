@@ -10,12 +10,12 @@ public class SetPlayerOfflineListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
-        MySQL.validateDatabase();
+        (new MySQL()).validateDatabase();
 
         Player player = event.getPlayer();
 
-        String query = "UPDATE " + MySQL.table + " SET is_online=0 WHERE uuid='" + player.getUniqueId() + "'";
-        MySQL.updateAsync(query);
+        String query = "UPDATE " + MySQL.table + " SET is_online=0 WHERE uuid='" + player.getUniqueId() + "' AND server = '" + MySQL.servername + "'";
+        (new MySQL()).updateAsync(query);
     }
 
 }

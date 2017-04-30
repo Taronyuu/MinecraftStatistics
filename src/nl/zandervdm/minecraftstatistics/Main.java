@@ -30,13 +30,11 @@ public class Main extends JavaPlugin {
         updateFrequency = config.getInt("frequency");
         statistics = this.getStatistics();
 
-        MySQL.establishMySQL();
-        if(MySQL.connection != null){
-            createDatabase();
-        }
+        (new MySQL()).openConnection();
+        createDatabase();
 
         String query = "UPDATE " + MySQL.table + " SET is_online=0";
-        MySQL.update(query);
+        (new MySQL()).update(query);
 
         plugin = this;
 
@@ -67,23 +65,23 @@ public class Main extends JavaPlugin {
         }
 
         table = table + " is_online int);";
-        MySQL.update(table);
+        (new MySQL()).update(table);
         updateDatabase();
     }
 
     protected void updateDatabase() {
         String query = "alter table " + MySQL.table + " " +
                 "ADD `server` varchar(100) NULL DEFAULT 'default' AFTER `name`";
-        MySQL.update(query, true);
+        (new MySQL()).update(query, true);
         query = "alter table " + MySQL.table + " " +
                 "ADD `last_join` int AFTER `server`";
-        MySQL.update(query, true);
+        (new MySQL()).update(query, true);
         // This might a hacky solutions, but migrations are a bitch.
         // Besides that, we want to support all future versions as well without keeping this up-to-date
         for(Statistic statistic : statistics){
             query = "alter table " + MySQL.table + " " +
                     "ADD `" + statistic + "` int(30) AFTER `last_join`";
-            MySQL.update(query, true);
+            (new MySQL()).update(query, true);
         }
 
         // What do we say to removing unused columns? Not today.

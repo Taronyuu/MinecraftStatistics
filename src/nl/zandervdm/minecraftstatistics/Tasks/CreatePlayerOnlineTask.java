@@ -16,10 +16,10 @@ public class CreatePlayerOnlineTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        MySQL.validateDatabase();
+        (new MySQL()).validateDatabase();
 
         try {
-            boolean result = MySQL.get("SELECT * FROM " + MySQL.table + " WHERE uuid = '" + player.getUniqueId() + "'").last();
+            boolean result = (new MySQL()).get("SELECT * FROM " + MySQL.table + " WHERE uuid = '" + player.getUniqueId() + "' AND server = '" + MySQL.servername + "'").last();
             if (!result) {
                 createUser(player);
             }
@@ -28,14 +28,14 @@ public class CreatePlayerOnlineTask extends BukkitRunnable {
         }
 
         int lastJoin = (int)(System.currentTimeMillis()/1000L);
-        String query = "UPDATE " + MySQL.table + " SET is_online=1,last_join=" + lastJoin + " WHERE uuid='" + player.getUniqueId() + "'";
+        String query = "UPDATE " + MySQL.table + " SET is_online=1,last_join=" + lastJoin + " WHERE uuid='" + player.getUniqueId() + "' AND server = '" + MySQL.servername + "'";
 
-        MySQL.updateAsync(query);
+        (new MySQL()).updateAsync(query);
     }
 
     protected void createUser(Player player) {
         String query = "INSERT INTO " + MySQL.table + " (uuid, name, server) VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', '" + MySQL.servername + "');";
-        MySQL.update(query);
+        (new MySQL()).update(query);
     }
 
 }

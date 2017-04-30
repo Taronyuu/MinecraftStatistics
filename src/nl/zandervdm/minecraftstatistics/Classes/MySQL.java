@@ -7,7 +7,7 @@ import java.sql.*;
 
 public class MySQL {
 
-    public static Connection connection;
+    public Connection connection;
 
     protected static String host;
     protected static Integer port;
@@ -17,7 +17,7 @@ public class MySQL {
     public static String servername;
     public static String table;
 
-    public static void establishMySQL()
+    public void openConnection()
     {
 
         host        = Main.config.getString("mysql.host");
@@ -32,36 +32,38 @@ public class MySQL {
         }
 
         try{
-            openConnection();
+            this.connection = connect();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public static void validateDatabase(){
+    public void validateDatabase(){
         try {
             if(connection == null || connection.isClosed() || connection.isReadOnly() || !connection.isValid(5)){
-                System.out.println("MinecraftStatistics: Invalid connection, reconnecting.");
-                MySQL.establishMySQL();
+                this.openConnection();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void update(String query)
+    public void update(String query)
     {
         try {
+            openConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeConnection();
     }
 
-    public static void update(String query, boolean silence)
+    public void update(String query, boolean silence)
     {
         try {
+            openConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.execute();
         } catch (SQLException e) {
@@ -71,9 +73,10 @@ public class MySQL {
                 e.printStackTrace();
             }
         }
+        closeConnection();
     }
 
-    public static void updateAsync(final String query){
+    public void updateAsync(final String query){
         Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, new Runnable() {
             @Override
             public void run() {
@@ -82,23 +85,33 @@ public class MySQL {
         });
     }
 
-    public static ResultSet get(String query)
+    public ResultSet get(String query)
     {
         try {
+            openConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             return statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        closeConnection();
         return null;
     }
 
-    private static Connection openConnection() throws ClassNotFoundException, SQLException
+    private Connection connect() throws ClassNotFoundException, SQLException
     {
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", username, password);
+        connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true&useSSL=false", username, password);
         return connection;
+    }
+
+    private void closeConnection()
+    {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            // Most likely no connection
+        }
     }
 
 }

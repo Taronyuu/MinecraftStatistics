@@ -30,7 +30,7 @@ public class CollectPlayerDataTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        MySQL.validateDatabase();
+        (new MySQL()).validateDatabase();
 
         Collection<? extends Player> players = this.plugin.getServer().getOnlinePlayers();
         Statistic[] statistics = Statistic.values();
@@ -46,7 +46,7 @@ public class CollectPlayerDataTask extends BukkitRunnable {
                 }
             }
             query = query + "is_online=1, server='" + MySQL.servername + "' WHERE uuid='" + player.getUniqueId() + "'";
-            MySQL.updateAsync(query);
+            (new MySQL()).updateAsync(query);
         }
 
         if(!singleRunOnly) {
