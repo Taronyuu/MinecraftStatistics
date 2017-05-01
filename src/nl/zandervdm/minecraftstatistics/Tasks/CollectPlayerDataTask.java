@@ -45,7 +45,7 @@ public class CollectPlayerDataTask extends BukkitRunnable {
                     // Most likely not allowed here
                 }
             }
-            query = query + "is_online=1, WHERE uuid='" + player.getUniqueId() + "' server='" + MySQL.servername + "' ";
+            query = query + "is_online=1, WHERE uuid='" + player.getUniqueId() + "' AND server='" + MySQL.servername + "' ";
             (new MySQL()).updateAsync(query);
         }
 
