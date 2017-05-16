@@ -21,6 +21,8 @@ public class Main extends JavaPlugin {
     public static List<Statistic> statistics;
     public static Main plugin;
 
+    public MySQL mysql;
+
     @Override
     public void onEnable()
     {
@@ -30,18 +32,20 @@ public class Main extends JavaPlugin {
         updateFrequency = config.getInt("frequency");
         statistics = this.getStatistics();
 
-        (new MySQL()).openConnection();
+        this.mysql = new MySQL();
+
+        this.mysql.openConnection();
         createDatabase();
 
         String query = "UPDATE " + MySQL.table + " SET is_online=0";
-        (new MySQL()).update(query);
+        this.mysql.update(query);
 
         plugin = this;
 
         getServer().getPluginManager().registerEvents(new SetPlayerOfflineListener(), this);
         getServer().getPluginManager().registerEvents(new SetPlayerOnlineListener(this), this);
 
-        new CollectPlayerDataTask(this).runTaskLater(this, updateFrequency*20);
+        new CollectPlayerDataTask(this).runTaskLaterAsynchronously(this, updateFrequency*20);
 
         this.getCommand("statsync").setExecutor(new SyncPlayersCommand(this));
     }
@@ -65,23 +69,23 @@ public class Main extends JavaPlugin {
         }
 
         table = table + " is_online int);";
-        (new MySQL()).update(table);
+        this.mysql.update(table);
         updateDatabase();
     }
 
     protected void updateDatabase() {
         String query = "alter table " + MySQL.table + " " +
                 "ADD `server` varchar(100) NULL DEFAULT 'default' AFTER `name`";
-        (new MySQL()).update(query, true);
+        this.mysql.update(query, true);
         query = "alter table " + MySQL.table + " " +
                 "ADD `last_join` int AFTER `server`";
-        (new MySQL()).update(query, true);
+        this.mysql.update(query, true);
         // This might a hacky solutions, but migrations are a bitch.
         // Besides that, we want to support all future versions as well without keeping this up-to-date
         for(Statistic statistic : statistics){
             query = "alter table " + MySQL.table + " " +
                     "ADD `" + statistic + "` int(30) AFTER `last_join`";
-            (new MySQL()).update(query, true);
+            this.mysql.update(query, true);
         }
 
         // What do we say to removing unused columns? Not today.

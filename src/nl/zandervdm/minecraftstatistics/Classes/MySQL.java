@@ -51,19 +51,16 @@ public class MySQL {
     public void update(String query)
     {
         try {
-            openConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        closeConnection();
     }
 
     public void update(String query, boolean silence)
     {
         try {
-            openConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.execute();
         } catch (SQLException e) {
@@ -73,14 +70,15 @@ public class MySQL {
                 e.printStackTrace();
             }
         }
-        closeConnection();
     }
 
     public void updateAsync(final String query){
         Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, new Runnable() {
             @Override
             public void run() {
+                openConnection();
                 update(query);
+                closeConnection();
             }
         });
     }
@@ -88,13 +86,12 @@ public class MySQL {
     public ResultSet get(String query)
     {
         try {
-            openConnection();
+            validateDatabase();
             PreparedStatement statement = connection.prepareStatement(query);
             return statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        closeConnection();
         return null;
     }
 
@@ -105,7 +102,7 @@ public class MySQL {
         return connection;
     }
 
-    private void closeConnection()
+    public void closeConnection()
     {
         try {
             this.connection.close();
