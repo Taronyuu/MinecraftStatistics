@@ -10,13 +10,18 @@ public class CreatePlayerOnlineTask extends BukkitRunnable {
 
     protected Player player;
 
+    protected MySQL mysql;
+
     public CreatePlayerOnlineTask(Player player) {
         this.player = player;
     }
 
     @Override
     public void run() {
-        (new MySQL()).validateDatabase();
+        MySQL mysql = new MySQL();
+        mysql.openConnection();
+
+        this.mysql = mysql;
 
         try {
             boolean result = (new MySQL()).get("SELECT * FROM " + MySQL.table + " WHERE uuid = '" + player.getUniqueId() + "' AND server = '" + MySQL.servername + "'").last();
@@ -30,12 +35,13 @@ public class CreatePlayerOnlineTask extends BukkitRunnable {
         int lastJoin = (int)(System.currentTimeMillis()/1000L);
         String query = "UPDATE " + MySQL.table + " SET is_online=1,last_join=" + lastJoin + " WHERE uuid='" + player.getUniqueId() + "' AND server = '" + MySQL.servername + "'";
 
-        (new MySQL()).updateAsync(query);
+        mysql.updateAsync(query);
+        mysql.closeConnection();
     }
 
     protected void createUser(Player player) {
         String query = "INSERT INTO " + MySQL.table + " (uuid, name, server) VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', '" + MySQL.servername + "');";
-        (new MySQL()).update(query);
+        this.mysql.update(query);
     }
 
 }
