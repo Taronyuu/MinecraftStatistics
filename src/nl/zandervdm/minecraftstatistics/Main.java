@@ -68,7 +68,7 @@ public class Main extends JavaPlugin {
             table = table + "`" + statistic + "`" + " int(30),";
         }
 
-        table = table + " is_online int);";
+        table = table + " is_online int);"; // And closing it
         this.mysql.update(table);
         updateDatabase();
     }
